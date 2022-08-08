@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.142.0",
+    "@aws-sdk/client-lightsail": "^3.142.0",
+    "@aws-sdk/util-dynamodb": "^3.142.0"
+  }
+}
