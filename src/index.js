@@ -6,6 +6,7 @@ const {
   GetContainerServiceMetricDataCommand, 
   UpdateContainerServiceCommand } = require('@aws-sdk/client-lightsail');
 const noLambda = process.env.hasOwnProperty('APP_NO_LAMBDA') === true;
+const { parseCronExpression } = require('cron-schedule');
 
 const requiredEnvs = [
   'APP_CONTAINER_SVC_NAME', 
@@ -36,7 +37,7 @@ async function getContainersMetric(params) {
     startTime: startTime,
     endTime: now
   };
-  console.log('[fn getContainersMteric] serviceMetricParams', serviceMetricParams)
+  console.log('[fn getContainersMteric] serviceMetricParams', serviceMetricParams);
   const command = new GetContainerServiceMetricDataCommand(serviceMetricParams);
   
   const response = await lightsailClient.send(command);
@@ -142,6 +143,19 @@ async function scaleInOut(params) {
   if (scalingProcess === 'no_scaling') {
     console.log(`[fn scaleInOut] No change for number of nodes (current: ${params.current.scale})`);
     return null;
+  }
+  
+  if (params.rules.scaling_type === 'scheduled') {
+    console.log('[fn scaleInOut] Doing scheduled scaling...');
+    
+    const cron = parseCronExpression(params.rules.run_at);
+    const now = new Date();
+    const isDateMatched = cron.matchDate(now);
+    
+    console.log(`[fn scaleInOut] Comparing date with cron. Date: ${now.toISOString()} vs cron: ${params.rules.run_at}. Is matched? ${isDateMatched}`);
+    if (isDateMatched === false) {
+      return null;
+    }
   }
   
   if (params.rules.scaling_type === 'dynamic') {
