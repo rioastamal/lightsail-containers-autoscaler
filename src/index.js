@@ -149,7 +149,7 @@ async function scaleInOut(params) {
     console.log('[fn scaleInOut] Doing scheduled scaling...');
     
     const cron = parseCronExpression(params.rules.run_at);
-    const now = new Date();
+    const now = params.current.date || new Date();
     const isDateMatched = cron.matchDate(now);
     
     console.log(`[fn scaleInOut] Comparing date with cron. Date: ${now.toISOString()} vs cron: ${params.rules.run_at}. Is matched? ${isDateMatched}`);
@@ -177,11 +177,13 @@ async function scaleInOut(params) {
     
     const currentAverage = Math.floor(currentMetricResponse.metricData[0].average);
     const lastDeploymentDate = new Date(params.last_deployment);
-    
+
+    console.log(`[fn scaleInOut] Comparing threshold metric. Current: ${currentAverage} vs arg: ${params.rules.average}`);
+
     // Scale out comparison
     if (params.rules.average_operator === 'gte') {
       if (currentAverage < params.rules.average) {
-        console.log(`[fn scaleInOut] Average metric still below threshold. Current: ${currentAverage} vs arg: ${params.rules.average}`);
+        console.log('[fn scaleInOut] Average metric still below threshold.');
         return null;
       }
     }
@@ -189,7 +191,7 @@ async function scaleInOut(params) {
     // Scale in comparison
     if (params.rules.average_operator === 'lte') {
       if (currentAverage > params.rules.average) {
-        console.log(`[fn scaleInOut] Average metric still above threshold. Current: ${currentAverage} vs arg: ${params.rules.average}`);
+        console.log('[fn scaleInOut] Average metric still above threshold.');
         return null;
       }
     }
