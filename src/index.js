@@ -21,8 +21,8 @@ for (const _env of requiredEnvs) {
   }
 }
 
-const lightsailClient = new LightsailClient({ region: process.env.AWS_DEFAULT_REGION });
-const ddbClient = new DynamoDBClient({ region: process.env.AWS_DEFAULT_REGION });
+const lightsailClient = new LightsailClient({ region: process.env.APP_REGION });
+const ddbClient = new DynamoDBClient({ region: process.env.APP_REGION });
 
 async function getContainersMetric(params) {
   const now = params.current_date || new Date();
