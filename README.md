@@ -213,7 +213,7 @@ run_at | Required (scheduled) | Cron Expression | Run scaling at specified inter
     {
       "enabled": true,
       "dry_run": false,
-      "scaling_type": "dynamic",
+      "scaling_type": "scheduled",
       "nodes": 1,
       "power": "nano",
       "run_at": "0-59 0-7,17-23 * * 1-5",
@@ -222,7 +222,7 @@ run_at | Required (scheduled) | Cron Expression | Run scaling at specified inter
     {
       "enabled": true,
       "dry_run": false,
-      "scaling_type": "dynamic",
+      "scaling_type": "scheduled",
       "nodes": 1,
       "power": "nano",
       "run_at": "* * * * 0,6",
