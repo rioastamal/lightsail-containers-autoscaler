@@ -2,7 +2,7 @@
 
 [Amazon Lightsail Containers](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-services) is one of the easiest way to run container based app on AWS. It automatically sets up a load balanced TLS endpoint, custom DNS, free private image registry and more. But I think  it lacks one important feature which is auto scaling. That's why I build this tool.
 
-lightsail-containers-autoscaler support both dynamic scaling and scheduled scaling. The aim of this tools is to be as simple as possible hence it is only consist of single Javascript file `src/index.js`. You just need to schedule this tool run in regular interval and it will fetch metrics from the Lightsail Container and do the auto-scaling.
+lightsail-containers-autoscaler support both dynamic scaling and scheduled scaling. The aim of this tool is to be as simple as possible hence it is only consist of single Javascript file `src/index.js`. You just need to schedule this tool run in regular interval and it will fetch metrics from the Lightsail Container and do the auto-scaling.
 
 I recommend running this tool using Amazon EventBridge and AWS Lambda so you do not have to maintain any servers.
 
@@ -41,7 +41,7 @@ npm install -g serverless
 
 ## How to Deploy
 
-These following services will be created:
+Several resources will be created during deployment such as:
 
 - Amazon DynamoDB
 - Amazon EventBridge
@@ -91,7 +91,7 @@ functions:
 
 Change `schedule.rate` to run the function as your required interval. See [AWS Schedule Syntax](http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html) for more details. The next thing you may want to change is `input`. It takes the same format as `input.sample.json` but in YAML format.
 
-To deploy just run:
+Make sure you already configure your AWS credentials via `~/.aws` or via `AWS_*` environment variables. To deploy just run:
 
 ```sh
 export AWS_DEFAULT_REGION=ap-southeast-1
@@ -106,9 +106,9 @@ It will run the Lambda function every 10 minutes and do the auto scaling based o
 
 ## How to Run (local)
 
-To run locally, make sure you already configure your AWS credentials via `~/.aws` or via `AWS_*` environment variables. Make sure you have permissions to write to DynamoDB table and Lightsail Container service. Take a look at IAM permissions defined in serverless.yml file.
+To run locally, configure your AWS credentials via `~/.aws` or via `AWS_*` environment variables. Then make sure you have permissions to write to DynamoDB table and Lightsail Container service. Take a look at IAM permissions defined in serverless.yml file.
 
-First, define required environment. In this case I am using `ap-southeast-1` and `demo-auto` as example values.
+First, define required environment variables. In this case I am using `ap-southeast-1` and `demo-auto` as example values.
 
 ```sh
 export AWS_DEFAULT_REGION=ap-southeast-1
