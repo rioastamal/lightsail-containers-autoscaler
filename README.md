@@ -111,7 +111,9 @@ To run locally, configure your AWS credentials via `~/.aws` or via `AWS_*` envir
 First, define required environment variables. In this case I am using `ap-southeast-1` and `demo-auto` as example values.
 
 ```sh
-export AWS_DEFAULT_REGION=ap-southeast-1
+export NODE_ENV=development
+export APP_REGION=ap-southeast-1
+export APP_TABLE_NAME=ls-containers-autoscaling-$NODE_ENV
 export APP_CONTAINER_SVC_NAME=demo-auto
 ```
 
