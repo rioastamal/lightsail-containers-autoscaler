@@ -35,7 +35,7 @@ npm install
 
 If you want to deploy to your AWS account, then you need to install Serverless Framework.
 
-```sh
+```
 npm install -g serverless
 ```
 
@@ -231,6 +231,11 @@ run_at | Required (scheduled) | Cron Expression | Run scaling at specified inter
   ]
 }
 ```
+
+## To do
+
+- Add unit tests
+- Improve documentation
 
 ## Contributing
 
