@@ -307,7 +307,7 @@ async function handler(event) {
   
     const response = {
       statusCode: 200,
-      body: JSON.stringify(obj, null, 2)
+      body: JSON.stringify(lastScalingResult)
     };
     
     return response;
@@ -318,10 +318,10 @@ async function handler(event) {
       errCode = e['$metadata'].httpStatusCode;
     }
     
+    console.log('[fn handler] Exception: ', e.stack);
     return {
       statusCode: errCode,
-      body: e.toString(),
-      stack: e.stack
+      body: e.toString()
     };
   }
 }
