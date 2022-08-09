@@ -35,7 +35,7 @@ npm install
 
 If you want to deploy to your AWS account, then you need to install Serverless Framework.
 
-```
+```sh
 npm install -g serverless
 ```
 
@@ -106,11 +106,11 @@ It will run the Lambda function every 10 minutes and do the auto scaling based o
 
 ## How to Run (local)
 
-To run locally, make sure you already configure your AWS credentials via `~/.aws` or via `AWS_*` environment variables. Make sure you have following permissions to write to DynamoDB table 
+To run locally, make sure you already configure your AWS credentials via `~/.aws` or via `AWS_*` environment variables. Make sure you have permissions to write to DynamoDB table and Lightsail Container service. Take a look at IAM permissions defined in serverless.yml file.
 
-First, define required environment first. In this case I am using `ap-southeast-1` and `demo-auto` as example values.
+First, define required environment. In this case I am using `ap-southeast-1` and `demo-auto` as example values.
 
-```
+```sh
 export AWS_DEFAULT_REGION=ap-southeast-1
 export APP_CONTAINER_SVC_NAME=demo-auto
 ```
@@ -122,6 +122,12 @@ cat input.sample.json | node src/index.js
 ```
 
 It will scale in/out the container service based on the rule matched.
+
+If you want to simulate particular date then pass `APP_CURRENT_DATE` environment when running this tool.
+
+```sh
+cat input.sample.json | APP_CURRENT_DATE=2020-08-08T06:30:00+07:00 node src/index.js
+```
 
 ## Configuration
 
@@ -233,4 +239,3 @@ Fork this repo and send me a Pull Request (PR).
 ## License
 
 This project is licensed under MIT License. See [LICENSE](LICENSE.md) file.
-
