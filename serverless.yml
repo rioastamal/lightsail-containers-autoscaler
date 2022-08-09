@@ -1,0 +1,92 @@
+service: 'lightsail-containers-autoscaling'
+frameworkVersion: '3'
+
+custom:
+  tableName: 'ls-containers-autoscaling-${env:NODE_ENV, "development"}'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${env:AWS_DEFAULT_REGION, 'ap-southeast-1'}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.tableName}'
+        - Effect: Allow
+          Action:
+            - lightsail:GetContainerServices
+            - lightsail:GetContainerServiceMetricData
+            - lightsail:UpdateContainerService
+          Resource: 'arn:aws:lightsail:${self:provider.region}:${aws:accountId}:*'
+
+functions:
+  autoscaling:
+    handler: src/index.handler
+    events:
+      - schedule:
+          rate: rate(10 minutes)
+          enabled: true
+          input: 
+            name: lightsail-containers-autoscaler
+            rules:
+            - enabled: true
+              dry_run: false
+              scaling_type: dynamic
+              nodes: 3
+              power: nano
+              metric: cpu
+              average: 20
+              average_operator: gte
+              average_duration_minutes: 10
+              wait_after_last_deployment_minutes: 10
+            - enabled: true
+              dry_run: false
+              scaling_type: dynamic
+              nodes: 1
+              power: nano
+              metric: cpu
+              average: 5
+              average_operator: lte
+              average_duration_minutes: 15
+              wait_after_last_deployment_minutes: 30
+            - enabled: true
+              dry_run: false
+              scaling_type: scheduled
+              nodes: 2
+              power: micro
+              run_at: "* * 21 * * *"
+              wait_after_last_deployment_minutes: 30
+
+    environment:
+      APP_TABLE_NAME: ${self:custom.tableName}
+      APP_REGION: ${env:AWS_DEFAULT_REGION, 'ap-southeast-1'}
+      APP_CONTAINER_SVC_NAME: ${env:APP_CONTAINER_SVC_NAME}
+          
+resources:
+  Resources:
+    BotDemoTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
