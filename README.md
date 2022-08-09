@@ -138,7 +138,7 @@ Explanation of each attribute on configuration that used in as an input for the 
 Attribute | Required | Value | Description
 ----------|----------|-------|------------
 name      | Required | `lightsail-containers-autoscaler` | Magic identifier
-rules     | Required | Array | Lift of rules that need to be applied
+rules     | Required | Array | List of rules that need to be applied
 
 Supported attributes for each element on `rules`.
 
