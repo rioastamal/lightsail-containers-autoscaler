@@ -2,7 +2,7 @@
 
 [Amazon Lightsail Containers](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-services) is one of the easiest way to run container based app on AWS. It automatically sets up a load balanced TLS endpoint, custom DNS, free private image registry and more. But I think  it lacks one important feature which is auto scaling. That's why I build this tool.
 
-lightsail-containers-autoscaler support both dynamic scaling and scheduled scaling. The aim of this tool is to be as simple as possible hence it is only consist of single Javascript file `src/index.js`. You just need to schedule this tool run in regular interval and it will fetch metrics from the Lightsail Container and do the auto-scaling.
+lightsail-containers-autoscaler support both dynamic scaling and scheduled scaling. The aim of this tool is to be as simple as possible hence it is only consist of single Javascript file `src/index.js`. You just need to schedule this tool to run in regular interval and it will fetch metrics from the Lightsail Container and do the auto-scaling.
 
 I recommend running this tool using Amazon EventBridge and AWS Lambda so you do not have to maintain any servers.
 
@@ -115,6 +115,7 @@ export NODE_ENV=development
 export APP_REGION=ap-southeast-1
 export APP_TABLE_NAME=ls-containers-autoscaling-$NODE_ENV
 export APP_CONTAINER_SVC_NAME=demo-auto
+export APP_NO_LAMBDA=true
 ```
 
 You can use sample configuration `input.sample.json` as an input.
@@ -153,7 +154,7 @@ metric    | Required (dynamic) | `cpu` or `memory` | Metric to monitor, CPU or M
 average   | Required (dynamic) | Number | Average percentage of the container service at given last `average_duration_minutes` minutes
 average_operator | Required (dynamic) | `lte` or `gte` | Comparison operator. `lte` (less than equal) and `gte` (greater than equal)
 average_duration_minutes | Required (dynamic) | Number | Duration of the metric to get. E.g: `10` means it will get average metric (cpu or memory) for the last 10 minutes
-wait_after_last_deployment_minutes | Required | Number | Waiting time before doing another scaling. It will not do the scaling when last deployment under `wait_after_last_deployment_minutes`
+wait_after_last_deployment_minutes | Required | Number | Waiting time before doing another scaling. It will not do the scaling when the deployment still under `wait_after_last_deployment_minutes`
 run_at | Required (scheduled) | Cron Expression | Run scaling at specified interval using cron expression, e.g: `* * 19 * * *` means run auto scaling every 7pm. 
 
 ### Sample 1
